@@ -1,3 +1,15 @@
+// --- NEW: IFRAME RESIZING LISTENER ---
+window.addEventListener('message', event => {
+    // Check if the received message is the one we're looking for
+    if (event.data && event.data.type === 'resize-iframe') {
+        const iframe = document.querySelector('iframe[name="contentFrame"]');
+        if (iframe) {
+            // Set the iframe height to the height sent by the child page, plus a little extra padding
+            iframe.style.height = (event.data.height + 20) + 'px';
+        }
+    }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     fetchChannelStats();
     setInterval(fetchChannelStats, 60000); // 60000 milliseconds = 60 seconds

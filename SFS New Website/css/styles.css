@@ -232,3 +232,99 @@ iframe {
     font-size: 1.1em;
     opacity: 0.9;
 }
+
+
+
+/* --- NEW STYLE FOR ANNOUNCEMENT ARCHIVE BUTTON --- */
+.archive-button {
+    background-color: #334b66;
+    color: #f0f0f0;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 1em;
+    border: 1px solid #b3ccff;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+.archive-button:hover {
+    background-color: #4a6a8a;
+}
+
+/* --- NEW STYLES FOR ANNOUNCEMENT SEARCH BAR --- */
+.search-container {
+    margin-bottom: 25px;
+}
+
+#announcement-search {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box; /* Prevents padding from making the box too wide */
+    border-radius: 5px;
+    border: 1px solid #334b66;
+    background-color: #0d1a26;
+    color: #f0f0f0;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 1em;
+}
+
+
+
+/* --- NEW STYLES FOR REDESIGNED VIDEO GALLERY --- */
+.gallery-title {
+    text-align: left;
+    color: #4CAF50;
+    border-bottom: 1px solid #334b66;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    margin-top: 40px; /* Adds space between sections */
+    font-size: 1.4em;
+}
+
+.grid-container {
+    display: grid;
+    /* This creates a responsive grid that fits as many columns as possible */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.video-card {
+    background-color: #0d1a26;
+    border-radius: 8px;
+    overflow: hidden; /* Ensures the thumbnail corners are rounded */
+    transition: transform 0.2s ease-in-out;
+    border: 1px solid #334b66;
+    cursor: pointer;
+}
+
+.video-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 15px rgba(179, 204, 255, 0.2);
+}
+
+.video-card-thumbnail img {
+    width: 100%;
+    aspect-ratio: 16 / 9; /* Enforces a 16:9 widescreen ratio */
+    object-fit: cover; /* Prevents the image from being stretched */
+    display: block;
+}
+
+.video-card-info {
+    padding: 15px;
+}
+
+.video-card-title {
+    font-weight: bold;
+    margin: 0;
+    /* The next lines are for truncating long titles */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.video-card-details {
+    font-size: 0.8em;
+    opacity: 0.7;
+    margin-top: 5px;
+}
