@@ -47,7 +47,7 @@ nav a {
     padding: 10px 15px;
     margin: 0 10px;
     border: 1px solid #b3ccff;
-    border-radius: 5px;
+    border-radius: 8px;
     transition: all 0.3s ease;
     background-color: rgba(13, 26, 38, 0.6);
     backdrop-filter: blur(10px);
@@ -327,4 +327,47 @@ iframe {
     font-size: 0.8em;
     opacity: 0.7;
     margin-top: 5px;
+}
+
+@media (max-width: 768px) {
+    main {
+        width: 90%;
+        margin-top: 10px;
+    }
+
+    nav {
+        display: flex;
+        flex-direction: column; /* Stack navigation links vertically */
+        gap: 10px;
+        align-items: center;
+    }
+
+    nav a {
+        width: 80%;
+        text-align: center;
+    }
+
+    .subscriber-section {
+        flex-direction: column; /* Stack stats vertically */
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .stat-divider {
+        width: 50%;
+        height: 1px;
+    }
+
+    .grid-container {
+        /* Show one column on mobile */
+        grid-template-columns: 1fr;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    .tagline {
+        font-size: 1em;
+    }
 }
