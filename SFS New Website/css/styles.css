@@ -1,0 +1,234 @@
+body {
+    background-color: #0d1a26;
+    color: #f0f0f0;
+    font-family: 'Exo 2', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+body.iframe-content {
+    background-color: transparent;
+    padding: 30px;
+    display: block;
+}
+
+header {
+    text-align: center;
+    padding: 30px 20px;
+}
+
+h1 {
+    font-size: 2.5em;
+    background: linear-gradient(to right, #4CAF50, #f0f0f0, #b3ccff, #4CAF50);
+    background-size: 200% auto;
+    color: #000;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 5s linear infinite;
+}
+
+.tagline {
+    font-size: 1.1em;
+    background: linear-gradient(to right, #b3ccff, #f0f0f0, #b3ccff);
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 8s linear infinite reverse;
+}
+
+nav a {
+    color: #b3ccff;
+    text-decoration: none;
+    padding: 10px 15px;
+    margin: 0 10px;
+    border: 1px solid #b3ccff;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    background-color: rgba(13, 26, 38, 0.6);
+    backdrop-filter: blur(10px);
+}
+
+nav a:hover {
+    background-color: rgba(179, 204, 255, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 0 15px rgba(179, 204, 255, 0.5);
+}
+
+main {
+    width: 80%;
+    max-width: 1200px;
+    margin-top: 20px;
+    text-align: center;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.subscriber-section {
+    display: inline-flex; /* This makes the box fit its content, and arranges items inside horizontally */
+    flex-direction: row;
+    align-items: center;
+    gap: 25px; /* The space between the "Subscribers" and "Total Views" sections */
+    
+    /* The glassy effect styles */
+    background-color: rgba(13, 26, 38, 0.6);
+    backdrop-filter: blur(10px);
+    
+    /* Spacing and rounded corners */
+    padding: 15px 30px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+
+.subscriber-section > div {
+    text-align: center;
+}
+
+.subscriber-section h2 {
+    font-weight: 300;
+    font-size: 0.9em;
+    opacity: 0.8;
+    margin-bottom: 5px;
+}
+
+.stat-divider {
+    width: 1px;
+    height: 40px;
+    background-color: #334b66;
+}
+
+iframe {
+    width: 100%;
+    height: 600px;
+    border: 1px solid #334b66;
+    background-color: rgba(26, 44, 62, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+#slideshow-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-color: #0d1a26;
+}
+
+.slideshow-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.slideshow-item.active {
+    opacity: 1;
+}
+
+.schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+.schedule-table th, .schedule-table td {
+    border: 1px solid #334b66;
+    padding: 12px;
+    text-align: left;
+}
+.schedule-table th {
+    background-color: #334b66;
+    font-weight: bold;
+}
+
+.social-links {
+    list-style: none;
+    padding: 0;
+}
+.social-links li {
+    margin-bottom: 10px;
+}
+.social-links a {
+    color: #b3ccff;
+    text-decoration: none;
+    font-size: 1.1em;
+}
+
+.announcement-post {
+    background-color: #0d1a26;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-left: 4px solid #4CAF50;
+    text-align: left;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shimmer {
+    to {
+        background-position: 200% center;
+    }
+}
+
+
+/* --- NEW STYLES FOR THE VIDEOS PAGE --- */
+
+#video-gallery-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px; /* Adds space between the video sections */
+    width: 100%;
+}
+
+.video-section h3 {
+    text-align: left;
+    color: #4CAF50;
+    border-bottom: 1px solid #334b66;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-size: 1.4em;
+}
+
+/* This is a common technique for responsive video embeds */
+.video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 8px; /* Rounded corners for the video player */
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.video-title {
+    text-align: left;
+    margin-top: 10px;
+    font-size: 1.1em;
+    opacity: 0.9;
+}

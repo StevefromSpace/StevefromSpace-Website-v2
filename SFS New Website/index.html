@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SteveFromSpace</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <header>
+        <h1>SteveFromSpace</h1>
+        <p class="tagline">Exploring the cosmos of gaming.</p>
+    </header>
+
+    <nav>
+        <a href="content/schedule.html" target="contentFrame">Schedule</a>
+        <a href="content/videos.html" target="contentFrame">Videos</a> 
+        <a href="content/announcements.html" target="contentFrame">Announcements</a>
+        <a href="content/about.html" target="contentFrame">About</a>
+    </nav>
+    
+    <div id="slideshow-container"></div>
+
+    <main>
+        <div class="subscriber-section">
+            <div>
+                <h2>Subscribers</h2>
+                <p id="subscriber-count">Loading...</p>
+            </div>
+            <div class="stat-divider"></div>
+            <div>
+                <h2>Total Views</h2>
+                <p id="view-count">Loading...</p>
+            </div>
+        </div>
+        
+        <iframe name="contentFrame" src="content/schedule.html" frameborder="0"></iframe>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 SteveFromSpace. All Rights Reserved.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
