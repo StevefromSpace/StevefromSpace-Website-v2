@@ -12,7 +12,7 @@ window.addEventListener('message', event => {
 
 document.addEventListener('DOMContentLoaded', () => {
     fetchChannelStats();
-    setInterval(fetchChannelStats, 60000); // 60000 milliseconds = 60 seconds
+    setInterval(fetchChannelStats, 120000); // 120000 milliseconds = 120 seconds
     
     buildSlideshow();
 });
