@@ -27,6 +27,11 @@ def get_channel_stats():
     
     print("Fetching new channel stats from API...")
     try:
+        # Check if API_KEY is available
+        if not API_KEY:
+            print("Error: YOUTUBE_API_KEY environment variable not set")
+            return None
+            
         youtube = build('youtube', 'v3', developerKey=API_KEY)
         request = youtube.channels().list(part='statistics', id=CHANNEL_ID)
         response = request.execute()
@@ -36,6 +41,7 @@ def get_channel_stats():
         if stats:
             stats_cache['data'] = stats
             stats_cache['timestamp'] = current_time
+            print("Channel stats cached successfully")
         return stats
     except Exception as e:
         print(f"An error occurred fetching channel stats: {e}")
@@ -52,32 +58,55 @@ def get_youtube_content():
     
     print("Fetching new YouTube content from API...")
     try:
+        # Check if API_KEY is available
+        if not API_KEY:
+            print("Error: YOUTUBE_API_KEY environment variable not set")
+            return None
+            
         youtube = build('youtube', 'v3', developerKey=API_KEY)
         
-        videos_request = youtube.search().list(part="snippet", channelId=CHANNEL_ID, maxResults=4, order="date", type="video")
+        videos_request = youtube.search().list(
+            part="snippet", 
+            channelId=CHANNEL_ID, 
+            maxResults=4, 
+            order="date", 
+            type="video"
+        )
         videos_response = videos_request.execute()
         latest_videos = []
         for item in videos_response.get("items", []):
-            latest_videos.append({'id': item['id']['videoId'], 'title': item['snippet']['title'], 'thumbnail': item['snippet']['thumbnails']['high']['url']})
+            latest_videos.append({
+                'id': item['id']['videoId'], 
+                'title': item['snippet']['title'], 
+                'thumbnail': item['snippet']['thumbnails']['high']['url']
+            })
 
-        playlists_request = youtube.playlists().list(part="snippet,contentDetails", channelId=CHANNEL_ID, maxResults=25)
+        playlists_request = youtube.playlists().list(
+            part="snippet,contentDetails", 
+            channelId=CHANNEL_ID, 
+            maxResults=25
+        )
         playlists_response = playlists_request.execute()
         playlists = []
         for item in playlists_response.get("items", []):
-            playlists.append({'id': item['id'], 'title': item['snippet']['title'], 'video_count': item['contentDetails']['itemCount'], 'thumbnail': item['snippet']['thumbnails']['high']['url']})
+            playlists.append({
+                'id': item['id'], 
+                'title': item['snippet']['title'], 
+                'video_count': item['contentDetails']['itemCount'], 
+                'thumbnail': item['snippet']['thumbnails']['high']['url']
+            })
 
         content = {'latest_videos': latest_videos, 'playlists': playlists}
         
         # If the fetch was successful, update the cache
-        if content:
+        if content and (latest_videos or playlists):
             youtube_content_cache['data'] = content
             youtube_content_cache['timestamp'] = current_time
+            print("YouTube content cached successfully")
         return content
     except Exception as e:
         print(f"An error occurred while fetching YouTube content: {e}")
         return None
-
-# ... (The rest of the file with all the @app.route endpoints remains the same) ...
 
 @app.route('/api/media')
 def get_media_files():
@@ -98,7 +127,7 @@ def get_media_files():
     except FileNotFoundError:
         print(f"Warning: The directory '{video_dir}' was not found.")
     return jsonify(media_list)
-    pass
+
 @app.route('/')
 def index():
     return send_from_directory('.', 'index.html')
@@ -120,4 +149,5 @@ def api_youtube_content():
     content = get_youtube_content()
     if content:
         return jsonify(content)
-    
+    else:
+        return jsonify(error="Could not retrieve YouTube content"), 500
