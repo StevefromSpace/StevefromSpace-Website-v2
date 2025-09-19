@@ -81,7 +81,23 @@ def get_youtube_content():
 
 @app.route('/api/media')
 def get_media_files():
-    # ...
+    """Scans the slideshow folders and returns a list of media files."""
+    media_list = []
+    image_dir = 'images/slideshow'
+    video_dir = 'videos/slideshow'
+    try:
+        for filename in os.listdir(image_dir):
+            if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
+                media_list.append({'type': 'image', 'path': os.path.join(image_dir, filename)})
+    except FileNotFoundError:
+        print(f"Warning: The directory '{image_dir}' was not found.")
+    try:
+        for filename in os.listdir(video_dir):
+            if filename.lower().endswith(('.mp4', '.webm', '.ogg')):
+                media_list.append({'type': 'video', 'path': os.path.join(video_dir, filename)})
+    except FileNotFoundError:
+        print(f"Warning: The directory '{video_dir}' was not found.")
+    return jsonify(media_list)
     pass
 @app.route('/')
 def index():
