@@ -4,48 +4,44 @@ from googleapiclient.discovery import build
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 
-# --- SECURITY UPDATE ---
-# The API key is now securely read from the server's environment variables.
-# The hardcoded key has been removed.
+# --- SECURE PRODUCTION VERSION ---
+# The API key is now read from the server's environment variables.
 API_KEY = os.environ.get('YOUTUBE_API_KEY')
 CHANNEL_ID = 'UCt2aQJmbRJ03JT_fDN7bSZQ'
 
 def get_channel_stats():
-    """Fetches channel statistics (subscribers and views) from the YouTube API."""
+    """Fetches channel statistics from the YouTube API."""
     if not API_KEY:
         print("ERROR: YOUTUBE_API_KEY environment variable not set.")
         return None
     try:
         youtube = build('youtube', 'v3', developerKey=API_KEY)
-        request = youtube.channels().list(
-            part='statistics',
-            id=CHANNEL_ID
-        )
+        request = youtube.channels().list(part='statistics', id=CHANNEL_ID)
         response = request.execute()
         if 'items' in response and response['items']:
             return response['items'][0]['statistics']
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"An error occurred fetching channel stats: {e}")
         return None
 
 def get_youtube_content():
-    """Fetches the latest and most popular videos from the YouTube channel."""
+    """Fetches recent videos and all playlists from the YouTube channel."""
     if not API_KEY:
         print("ERROR: YOUTUBE_API_KEY environment variable not set.")
         return None
     try:
         youtube = build('youtube', 'v3', developerKey=API_KEY)
-        latest_request = youtube.search().list(part="snippet", channelId=CHANNEL_ID, maxResults=1, order="date", type="video")
-        latest_response = latest_request.execute()
-        latest_video_data = latest_response.get("items", [])[0] if latest_response.get("items") else None
-        popular_request = youtube.search().list(part="snippet", channelId=CHANNEL_ID, maxResults=1, order="viewCount", type="video")
-        popular_response = popular_request.execute()
-        popular_video_data = popular_response.get("items", [])[0] if popular_response.get("items") else None
-        content = {
-            'latest_video': {'id': latest_video_data['id']['videoId'], 'title': latest_video_data['snippet']['title']} if latest_video_data else None,
-            'popular_video': {'id': popular_video_data['id']['videoId'], 'title': popular_video_data['snippet']['title']} if popular_video_data else None,
-        }
-        return content
+        videos_request = youtube.search().list(part="snippet", channelId=CHANNEL_ID, maxResults=4, order="date", type="video")
+        videos_response = videos_request.execute()
+        latest_videos = []
+        for item in videos_response.get("items", []):
+            latest_videos.append({'id': item['id']['videoId'], 'title': item['snippet']['title'], 'thumbnail': item['snippet']['thumbnails']['high']['url']})
+        playlists_request = youtube.playlists().list(part="snippet,contentDetails", channelId=CHANNEL_ID, maxResults=25)
+        playlists_response = playlists_request.execute()
+        playlists = []
+        for item in playlists_response.get("items", []):
+            playlists.append({'id': item['id'], 'title': item['snippet']['title'], 'video_count': item['contentDetails']['itemCount'], 'thumbnail': item['snippet']['thumbnails']['high']['url']})
+        return {'latest_videos': latest_videos, 'playlists': playlists}
     except Exception as e:
         print(f"An error occurred while fetching YouTube content: {e}")
         return None
@@ -74,7 +70,7 @@ def get_media_files():
 def index():
     return send_from_directory('.', 'index.html')
 
-@app.route('/<path:filename>')
+@app.route('/<path/filename>')
 def serve_static(filename):
     return send_from_directory('.', filename)
 
