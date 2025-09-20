@@ -123,3 +123,22 @@ async function fetchChannelStats() {
         if (viewElement) viewElement.textContent = "Unavailable";
     }
 }
+
+// Background Music Area
+document.addEventListener('DOMContentLoaded', function() {
+    const music = document.getElementById('background-music');
+    const muteBtn = document.getElementById('mute-toggle');
+    
+    // Set initial volume to a reasonable level (e.g., 50%)
+    music.volume = 0.5; 
+
+    muteBtn.addEventListener('click', function() {
+        if (music.paused) {
+            music.play();
+            muteBtn.textContent = '🎵'; // Icon for 'playing'
+        } else {
+            music.pause();
+            muteBtn.textContent = '🔇'; // Icon for 'muted'
+        }
+    });
+});

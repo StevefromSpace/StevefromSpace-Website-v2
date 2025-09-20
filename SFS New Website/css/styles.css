@@ -343,3 +343,36 @@ iframe {
         font-size: 1em;
     }
 }
+
+
+/* ==============================================================================
+   7.Background Music
+   ============================================================================== */
+header {
+    position: relative;
+}
+
+.mute-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.mute-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.mute-btn:active {
+    transform: scale(0.9);
+}
