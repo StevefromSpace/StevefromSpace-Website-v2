@@ -1,18 +1,18 @@
-// --- NEW: IFRAME RESIZING LISTENER ---
+// --- IFRAME RESIZING LISTENER ---
 window.addEventListener('message', event => {
-    // Check if the received message is the one we're looking for
     if (event.data && event.data.type === 'resize-iframe') {
         const iframe = document.querySelector('iframe[name="contentFrame"]');
         if (iframe) {
-            // Set the iframe height to the height sent by the child page, plus a little extra padding
             iframe.style.height = (event.data.height + 20) + 'px';
         }
     }
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+    // We still call this once to load the initial stats
     fetchChannelStats();
-    setInterval(fetchChannelStats, 120000); // 120000 milliseconds = 120 seconds
+    
+    // The setInterval line has been removed
     
     buildSlideshow();
 });
