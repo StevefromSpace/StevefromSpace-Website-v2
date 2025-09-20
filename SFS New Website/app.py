@@ -17,7 +17,7 @@ stats_cache = {'data': None, 'timestamp': 0}
 youtube_content_cache = {'data': None, 'timestamp': 0}
 
 def get_channel_stats():
-    """Fetches channel statistics from cache or the YouTube API."""
+    """Fetches channel statistics from cache or the YouTube API with a failsafe."""
     current_time = time.time()
     if stats_cache['data'] and (current_time - stats_cache['timestamp'] < CACHE_DURATION):
         print("Returning cached channel stats.")
@@ -37,11 +37,11 @@ def get_channel_stats():
             stats_cache['timestamp'] = current_time
         return stats
     except Exception as e:
-        print(f"An error occurred fetching channel stats: {e}")
-        return None
+        print(f"!!! YOUTUBE API ERROR (get_channel_stats): {e}. Serving stale data from cache. !!!")
+        return stats_cache['data']
 
 def get_youtube_content():
-    """Fetches YouTube content from cache or the API."""
+    """Fetches YouTube content from cache or the API with a failsafe."""
     current_time = time.time()
     if youtube_content_cache['data'] and (current_time - youtube_content_cache['timestamp'] < CACHE_DURATION):
         print("Returning cached YouTube content.")
@@ -64,13 +64,13 @@ def get_youtube_content():
         for item in playlists_response.get("items", []):
             playlists.append({'id': item['id'], 'title': item['snippet']['title'], 'video_count': item['contentDetails']['itemCount'], 'thumbnail': item['snippet']['thumbnails']['high']['url']})
         content = {'latest_videos': latest_videos, 'playlists': playlists}
-        if content:
+        if content and (latest_videos or playlists):
             youtube_content_cache['data'] = content
             youtube_content_cache['timestamp'] = current_time
         return content
     except Exception as e:
-        print(f"An error occurred while fetching YouTube content: {e}")
-        return None
+        print(f"!!! YOUTUBE API ERROR (get_youtube_content): {e}. Serving stale data from cache. !!!")
+        return youtube_content_cache['data']
 
 @app.route('/api/media')
 def get_media_files():
