@@ -3,6 +3,7 @@
 # ==============================================================================
 import os
 import time
+import threading  # --- ADDED FOR CACHE WARMING ---
 from flask import Flask, jsonify, send_from_directory
 from googleapiclient.discovery import build
 
@@ -23,7 +24,7 @@ CHANNEL_ID = 'UCt2aQJmbRJ03JT_fDN7bSZQ'
 # --- CACHING SETUP ---
 # A simple in-memory cache to store API results and reduce quota usage.
 # The cache is valid for 5 hours (18000 seconds).
-CACHE_DURATION = 18000 
+CACHE_DURATION = 18000
 stats_cache = {'data': None, 'timestamp': 0}
 youtube_content_cache = {'data': None, 'timestamp': 0}
 
@@ -43,7 +44,7 @@ def get_channel_stats():
     if stats_cache['data'] and (current_time - stats_cache['timestamp'] < CACHE_DURATION):
         print("Returning cached channel stats.")
         return stats_cache['data']
-    
+
     print("Fetching new channel stats from API...")
     if not API_KEY:
         print("ERROR: YOUTUBE_API_KEY environment variable not set.")
@@ -54,7 +55,7 @@ def get_channel_stats():
         request = youtube.channels().list(part='statistics', id=CHANNEL_ID)
         response = request.execute()
         stats = response['items'][0]['statistics'] if 'items' in response and response['items'] else None
-        
+
         # If the fetch was successful, update the cache
         if stats:
             stats_cache['data'] = stats
@@ -75,7 +76,7 @@ def get_youtube_content():
     if youtube_content_cache['data'] and (current_time - youtube_content_cache['timestamp'] < CACHE_DURATION):
         print("Returning cached YouTube content.")
         return youtube_content_cache['data']
-    
+
     print("Fetching new YouTube content from API...")
     if not API_KEY:
         print("ERROR: YOUTUBE_API_KEY environment variable not set.")
@@ -83,7 +84,7 @@ def get_youtube_content():
 
     try:
         youtube = build('youtube', 'v3', developerKey=API_KEY)
-        
+
         # Fetch the 4 most recent videos
         videos_request = youtube.search().list(part="snippet", channelId=CHANNEL_ID, maxResults=4, order="date", type="video")
         videos_response = videos_request.execute()
@@ -106,9 +107,9 @@ def get_youtube_content():
                 'video_count': item['contentDetails']['itemCount'],
                 'thumbnail': item['snippet']['thumbnails']['high']['url']
             })
-        
+
         content = {'latest_videos': latest_videos, 'playlists': playlists}
-        
+
         # Update the cache only if we received valid data
         if content and (latest_videos or playlists):
             youtube_content_cache['data'] = content
@@ -118,6 +119,18 @@ def get_youtube_content():
         # Failsafe: Log the error and return the old (stale) data if it exists
         print(f"!!! YOUTUBE API ERROR (get_youtube_content): {e}. Serving stale data from cache. !!!")
         return youtube_content_cache['data']
+
+# --- ADDED FOR CACHE WARMING ---
+def warm_up_cache():
+    """
+    A target function to run in a background thread on startup.
+    It calls the YouTube API functions to populate the cache.
+    """
+    print("Background cache warming started...")
+    get_channel_stats()
+    get_youtube_content()
+    print("...background cache warming finished.")
+# --- END ADDED SECTION ---
 
 
 # ==============================================================================
@@ -171,3 +184,13 @@ def index():
 def serve_static(filename):
     """Serves all other static files (css, js, images, etc.)."""
     return send_from_directory('.', filename)
+
+# --- ADDED FOR CACHE WARMING ---
+# This block ensures the cache warming runs only when the app is started
+# by a production server like Gunicorn, not when run directly for local testing.
+if __name__ != '__main__':
+    print("Starting background cache warming thread...")
+    cache_thread = threading.Thread(target=warm_up_cache)
+    cache_thread.daemon = True  # Allows main app to exit even if thread is running
+    cache_thread.start()
+# --- END ADDED SECTION ---
